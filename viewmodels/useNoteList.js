@@ -1,70 +1,56 @@
-import React from 'react';
-import { View, Text, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
-import { useNoteList } from '../viewmodels/useNoteList';
-import NoteItem from '../components/NoteItem';
+import { useState, useEffect } from 'react';
+import { getNotesFromStorage } from '../services/FileService';
 
 /**
- * ノート一覧画面のコンポーネント
- * ViewModel（useNoteList）から状態とロジックを取得して表示する
+ * ノート一覧の状態管理を行うViewModel
+ * - ノートの取得
+ * - 読み込み状態の管理
+ * - エラー処理
+ * - ノートの追加・削除
  */
-export default function NoteListScreen() {
-  // ViewModelから状態を取得
-  const { notes, loading, error } = useNoteList();
+export function useNoteList() {
+  // ノート一覧の状態（Model）
+  const [notes, setNotes] = useState([]);
 
-  // 読み込み中の表示
-  if (loading) {
-    return (
-      <View style={styles.center}>
-        <ActivityIndicator size="large" color="#007AFF" />
-        <Text>読み込み中...</Text>
-      </View>
-    );
-  }
+  // 読み込み中かどうかの状態
+  const [loading, setLoading] = useState(true);
 
-  // エラーが発生した場合の表示
-  if (error) {
-    return (
-      <View style={styles.center}>
-        <Text style={styles.error}>エラーが発生しました: {error.message}</Text>
-      </View>
-    );
-  }
+  // エラーが発生した場合の状態
+  const [error, setError] = useState(null);
 
-  // ノート一覧の表示
-  return (
-    <View style={styles.container}>
-      <Text style={styles.header}>📒 ノート一覧</Text>
+  // 初回レンダリング時にノートを読み込む
+  useEffect(() => {
+    async function fetchNotes() {
+      try {
+        const data = await getNotesFromStorage(); // 外部サービスから取得
+        setNotes(data);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-      {/* FlatListでノートをリスト表示 */}
-      <FlatList
-        data={notes} // 表示するノートデータ
-        keyExtractor={(item) => item.id} // 一意なキー（id）
-        renderItem={({ item }) => (
-          <NoteItem note={item} /> // NoteItemコンポーネントで表示
-        )}
-      />
-    </View>
-  );
+    fetchNotes();
+  }, []);
+
+  // ノートを追加する関数
+  const addNote = (newNote) => {
+    setNotes((prev) => [...prev, newNote]);
+    // 必要なら保存処理も呼び出す
+  };
+
+  // ノートを削除する関数
+  const deleteNote = (id) => {
+    setNotes((prev) => prev.filter((note) => note.id !== id));
+  };
+
+  // Viewに渡す値と関数をまとめて返す
+  return {
+    notes,
+    loading,
+    error,
+    addNote,
+    deleteNote,
+  };
 }
-
-// スタイル定義
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: '#fff',
-  },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  header: {
-    fontSize: 24,
-    marginBottom: 10,
-  },
-  error: {
-    color: 'red',
-    fontSize: 16,
-  },
-});

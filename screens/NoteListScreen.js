@@ -1,7 +1,7 @@
-import React from 'react';
-import { View, Text, FlatList, ActivityIndicator, StyleSheet } from 'react-native';
-import { useNoteList } from '../viewmodels/useNoteList';
-import NoteItem from '../components/NoteItem';
+import React from 'react';  // Reactと必要なコンポーネントをインポート
+import { View, Text, FlatList, ActivityIndicator, StyleSheet } from 'react-native'; // React Nativeのコンポーネントをインポート ActivityIndicator: 読み込み中のぐるぐるアイコン
+import { useNoteList } from '../viewmodels/useNoteList';    //ViewModel（useNoteList.js）を読み込んで、ノート一覧の状態（データ・ロジック）を取得できるようにしています。
+import NoteItem from '../components/NoteItem';  // NoteItemコンポーネントをインポートして、ノート1件を表示するために使用します。
 
 /**
  * ノート一覧画面のコンポーネント

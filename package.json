@@ -1,0 +1,24 @@
+{
+  "dependencies": {
+    "expo": "^53.0.19",
+    "react-native": "^0.80.1"
+  },
+  "name": "pencilapp_project",
+  "version": "1.0.0",
+  "description": "\"# pencilapp_project\"",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kamome257/pencilapp_project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kamome257/pencilapp_project/issues"
+  },
+  "homepage": "https://github.com/kamome257/pencilapp_project#readme"
+}
